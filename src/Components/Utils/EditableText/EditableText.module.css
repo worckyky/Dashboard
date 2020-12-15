@@ -1,0 +1,8 @@
+.EditableTitle {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.EditableTitle:hover {
+    opacity: 0.6;
+}
