@@ -1,8 +1,27 @@
-.EditableTitle {
+.EditableText {
     cursor: pointer;
     transition: all 0.2s;
+    overflow-wrap: break-word;
 }
 
-.EditableTitle:hover {
+.EditableText:hover {
     opacity: 0.6;
 }
+
+.EditableText__container {
+    position: relative;
+
+}
+
+.EditableText__deleteBtn {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.EditableText__textArea {
+    width: 100%;
+    height: auto;
+    resize: vertical;
+}
+

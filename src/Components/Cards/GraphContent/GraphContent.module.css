@@ -1,0 +1,8 @@
+.select__container {
+    display: flex;
+    margin: 8px 0;
+}
+
+.select__container p {
+    margin-right: 8px;
+}

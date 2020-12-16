@@ -1,44 +1,61 @@
-import React, { ChangeEvent, useState } from 'react'
-import s from './EditableTitle.module.css'
+import React, { ChangeEvent, useState } from "react";
+import s from "./EditableText.module.css";
+import TextareaAutosize from "react-textarea-autosize";
 
-const EditableTitle = () => {
-   const [edit, setEdit] = useState(false)
-   const [data, setData] = useState('Some Title')
-
-   const ValidateData = () => {
-      data.length === 0 ? setData('Set Title') : setData(data)
-      setEdit(!edit)
-   }
-   const changeDataHandler = () => {
-      ValidateData()
-   }
-   const changeValueData = (e: ChangeEvent<HTMLInputElement>) => {
-      setData(e.currentTarget.value)
-   }
-   const keyPressValueData = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
-         ValidateData()
-      }
-   }
-
-   return (
-      <span>
-         {edit ? (
-            <input
-               type='text'
-               value={data}
-               autoFocus
-               onChange={changeValueData}
-               onBlur={changeDataHandler}
-               onKeyPress={keyPressValueData}
-            />
-         ) : (
-            <h2 onClick={changeDataHandler} className={s.EditableTitle}>
-               {data}
-            </h2>
-         )}
-      </span>
-   )
+type EditableTextType = {
+  id: string
+  text: string
+  deleteText: () => void
+  changeText: (text: string) => void
 }
 
-export default EditableTitle
+const EditableText: React.FC<EditableTextType> = ({ id, text, deleteText, changeText }) => {
+  const [edit, setEdit] = useState(false);
+  const [value, setValue] = useState(text)
+  const ValidateData = () => {
+    value.length === 0 ? changeText("Set Text") : changeText(value);
+    setEdit(!edit);
+  };
+  const changeDataHandler = () => {
+    ValidateData();
+  };
+  const changeValueData = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setValue(e.currentTarget.value);
+  };
+  const keyPressValueData = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter") {
+      ValidateData();
+    }
+  };
+
+  return (
+    <div key={id} className={s.EditableText__container}>
+      {edit ? (
+        <TextareaAutosize
+          value={value}
+          autoFocus
+          onChange={changeValueData}
+          onBlur={changeDataHandler}
+          onKeyPress={keyPressValueData}
+          className={s.EditableText__textArea}
+          wrap={"soft"}
+        />
+      ) : (
+        <>
+          <p onDoubleClick={changeDataHandler} className={s.EditableText}>
+            {text}
+          </p>
+          <button
+            className={s.EditableText__deleteBtn}
+            onClick={() => {
+              deleteText();
+            }}>
+            X
+          </button>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default EditableText;

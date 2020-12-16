@@ -1,54 +1,62 @@
-import React, { ChangeEvent, useEffect } from "react";
-import s from "./SimpleContent.module.css";
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
+import s from "./ImageContent.module.css";
 import card from "../cards.module.css";
 import EditableTitle from "../../Utils/EditableTitle/EditableTitle";
-import EditableText from "../../Utils/EditableText/EditableText";
 import { useDispatch, useSelector } from "react-redux";
 import { AppStateType } from "../../../Redux/store";
-import { InitialStateType, actions } from "../../../Redux/1-SimpleContentRedux/SimpleContentReducer";
+import { InitialStateType, actions } from "../../../Redux/2-ImageContentRedux/ImageContentReducer";
+import { ReactComponent as Photo } from "./Images/Photo.svg";
 
-const SimpleContent = () => {
-  const { Paragraph, newParagraph, Title } = useSelector<AppStateType, InitialStateType>(
-    (state) => state.SimpleContent
-  );
+const ImageContent = () => {
+  const { image, imageName, Title } = useSelector<AppStateType, InitialStateType>((state) => state.ImageContent);
+  const [file, setFile] = useState<string>("");
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let data = localStorage.getItem("SimpleContent");
+    let data = localStorage.getItem("ImageContent");
     if (data !== null) {
-      dispatch(actions.fetchSimpleContentData(JSON.parse(data)));
+      dispatch(actions.fetchImageContentData(JSON.parse(data)));
     }
   }, []);
 
-  const changeTextHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(actions.newParagraphText(e.currentTarget.value));
-  };
+  const fileHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const reader = new FileReader();
 
-  const changeTitleHandler = (title: string) => {
-    dispatch(actions.changeTitle(title));
+    const newFile = e.target.files && e.target.files[0];
+    if (newFile) {
+      setFile(URL.createObjectURL(newFile));
+      reader.onloadend = () => {
+        dispatch(actions.setImage(reader.result, newFile.name));
+      };
+      reader.readAsDataURL(newFile);
+    }
   };
-  const addParagHandler = () => {
-   dispatch(actions.addNewText(newParagraph))
+  const renderFiles = (file: string) => {
+    return (
+      imageName.length !== 0 ? <div className={s.imageContainer} style={{ backgroundImage: `url(${file || image})` }}>
+
+      </div> : <div className={s.imageContainer}><Photo className={s.imageDefault}/></div>
+      );
   };
 
   return (
     <div className={card.cards__container}>
-      <EditableTitle title={Title} changeTitle={changeTitleHandler}/>
-      {Paragraph.map((t) => {
-        const deleteText = () => {
-          dispatch(actions.deleteText(t.id));
-        };
-        const changeText = (text: string) => {
-          dispatch(actions.changeTextBlock(text, t.id));
-        };
-        return <EditableText id={t.id} text={t.Text} key={t.id} deleteText={deleteText} changeText={changeText}/>;
-      })}
-      <span>
-            <input type='text' value={newParagraph} onChange={changeTextHandler}/>
-            <button onClick={addParagHandler}>Add Paragraph</button>
-         </span>
+      <h2>{Title}</h2>
+      <div>
+        <p>{imageName ? imageName : "Some image Data"}</p>
+        <div>
+          <input
+            onChange={fileHandleChange}
+            style={{ display: "none" }}
+            type={"file"}
+            id={"file"}
+            accept='.jpg, .jpeg, .png'
+          />
+        </div>
+        <label htmlFor={"file"}>{renderFiles(file)}</label>
+      </div>
     </div>
   );
 };
 
-export default SimpleContent;
+export default ImageContent;

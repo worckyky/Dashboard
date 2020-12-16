@@ -1,0 +1,43 @@
+.imageContainer {
+    margin-top: 16px;
+    width: 100%;
+    height: 100px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid beige;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.imageContainer::after {
+    content: '';
+    color: #ffffff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    z-index: 2;
+    transition: all 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.0);
+}
+
+.imageContainer:hover::after {
+    content: 'Set Photo';
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.imageDefault {
+    width: 32px;
+    height: 32px;
+}

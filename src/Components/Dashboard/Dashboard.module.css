@@ -1,0 +1,10 @@
+.onHover {
+    background-color: #f6f8fa;
+    border: 1px dashed gray;
+    border-radius: 6px;
+}
+
+.onEnd {
+    background-color: #ffffff;
+    border: 1px dashed #ffffff;
+}
